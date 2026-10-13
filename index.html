@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="es-PE">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Calcula tu Negocio</title>
+  <meta name="description" content="Calcula tus costos, tu precio, tu punto de equilibrio y tu meta de ahorro.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="top">
+    <div class="top-inner">
+      <div class="brand">
+        <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true">
+          <rect x="3" y="3" width="26" height="26" rx="5" fill="none" stroke="currentColor" stroke-width="2.4"/>
+          <path d="M9 21h14M9 25h14" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+          <path d="M10 15l4-4 3 3 5-6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span>Calcula tu Negocio</span>
+      </div>
+      <div class="top-actions">
+        <button type="button" class="link-btn" id="btn-ejemplo">Ver ejemplo</button>
+        <button type="button" class="link-btn" id="btn-reiniciar">Empezar de cero</button>
+      </div>
+    </div>
+    <nav class="steps" aria-label="Pasos">
+      <ol>
+        <li><button type="button" data-go="1"><span class="n">1</span><span class="t">Mis costos</span></button></li>
+        <li><button type="button" data-go="2"><span class="n">2</span><span class="t">Mi precio</span></button></li>
+        <li><button type="button" data-go="3"><span class="n">3</span><span class="t">Equilibrio</span></button></li>
+        <li><button type="button" data-go="4"><span class="n">4</span><span class="t">Mi meta</span></button></li>
+      </ol>
+    </nav>
+  </header>
+
+  <main class="layout">
+    <div class="pages">
+
+      <!-- PASO 1 -->
+      <section class="page" data-step="1" aria-labelledby="h1">
+        <h1 id="h1">¿Cuánto te cuesta tu negocio?</h1>
+        <p class="lead">Anota todo lo que gastas. Para cada gasto, dinos si lo pagas aunque no vendas nada (como el alquiler) o si depende de cada venta (como los insumos).</p>
+
+        <div class="row-2">
+          <label class="field">
+            <span>Nombre de tu negocio</span>
+            <input type="text" id="negocio" placeholder="Ej.: Menú de doña Rosa" autocomplete="off">
+          </label>
+          <label class="field">
+            <span>¿Qué vendes? (en singular)</span>
+            <input type="text" id="unidad" placeholder="Ej.: menú" autocomplete="off">
+          </label>
+        </div>
+
+        <h2>Tus gastos</h2>
+        <div id="gastos" class="gastos"></div>
+        <button type="button" class="ghost-btn" id="btn-add">+ Agregar un gasto</button>
+
+        <div class="sueldo">
+          <label class="field">
+            <span>Tu propio sueldo al mes (opcional)</span>
+            <div class="money"><span>S/</span><input type="number" id="sueldo" min="0" step="any" inputmode="decimal" placeholder="0"></div>
+          </label>
+          <p class="hint">Tu tiempo también vale. Si trabajaras para otra persona, ganarías un sueldo: eso es tu <strong>costo de oportunidad</strong>. Si lo anotas, la app lo cuenta como un gasto fijo.</p>
+        </div>
+
+        <div class="ledger" aria-live="polite">
+          <div class="ledger-row"><span>Gastos fijos al mes</span><strong id="r1-cf">S/ 0.00</strong></div>
+          <div class="ledger-row"><span id="r1-cvu-label">Costo por cada unidad</span><strong id="r1-cvu">S/ 0.00</strong></div>
+        </div>
+      </section>
+
+      <!-- PASO 2 -->
+      <section class="page" data-step="2" aria-labelledby="h2" hidden>
+        <h1 id="h2">¿Tu precio te deja ganancia?</h1>
+        <p class="lead">Escribe a cuánto vendes y cuánto vendes normalmente.</p>
+
+        <div class="row-3">
+          <label class="field">
+            <span id="lbl-precio">Precio de venta</span>
+            <div class="money"><span>S/</span><input type="number" id="precio" min="0" step="any" inputmode="decimal" placeholder="0"></div>
+          </label>
+          <label class="field">
+            <span>Ventas por día</span>
+            <input type="number" id="ventasDia" min="0" step="any" inputmode="decimal" placeholder="0">
+          </label>
+          <label class="field">
+            <span>Días que trabajas al mes</span>
+            <input type="number" id="dias" min="1" max="31" step="1" inputmode="numeric" placeholder="25">
+          </label>
+        </div>
+
+        <div class="semaforo" id="semaforo" data-estado="vacio">
+          <div class="luces" aria-hidden="true"><i class="r"></i><i class="a"></i><i class="v"></i></div>
+          <div>
+            <p class="sem-titulo" id="sem-titulo">Completa tus datos</p>
+            <p class="sem-texto" id="sem-texto">Con tu precio y tus ventas te diremos si tu negocio gana o pierde.</p>
+          </div>
+        </div>
+
+        <div class="ledger">
+          <div class="ledger-row"><span id="r2-margen-l">Te deja cada unidad</span><strong id="r2-margen">—</strong></div>
+          <div class="ledger-row"><span>Costo promedio de cada unidad</span><strong id="r2-cme">—</strong></div>
+          <div class="ledger-row"><span>Unidades que vendes al mes</span><strong id="r2-q">—</strong></div>
+        </div>
+        <details class="explica">
+          <summary>¿Qué significa esto?</summary>
+          <p><strong>Lo que te deja cada unidad</strong> es tu precio menos lo que te cuesta hacerla. Con ese dinero pagas tus gastos fijos. En economía se llama <em>margen de contribución</em>.</p>
+          <p><strong>El costo promedio</strong> suma todos tus gastos del mes y los divide entre lo que vendes. Si tu precio está por encima, ganas.</p>
+        </details>
+      </section>
+
+      <!-- PASO 3 -->
+      <section class="page" data-step="3" aria-labelledby="h3" hidden>
+        <h1 id="h3">¿Cuánto tienes que vender para no perder?</h1>
+
+        <div class="total" id="eq-box">
+          <p class="total-label">Para no perder, vende por lo menos</p>
+          <p class="total-num"><span id="eq-dia">—</span></p>
+          <p class="total-sub" id="eq-mes">Completa los pasos 1 y 2.</p>
+        </div>
+
+        <section class="plano" aria-labelledby="plano-titulo">
+          <h2 id="plano-titulo">Lo que cobras y lo que gastas</h2>
+          <p class="hint">Cada punto de la línea azul es lo que cobras según cuánto vendas; la gris, lo que gastas. Donde se cruzan no ganas ni pierdes. A la derecha de ese cruce ganas (zona verde) y a la izquierda pierdes (zona roja).</p>
+
+          <div class="plano-bar">
+            <div class="seg" role="group" aria-label="Ver las cantidades">
+              <button type="button" data-u="dia" aria-pressed="true">Por día</button>
+              <button type="button" data-u="mes" aria-pressed="false">Por mes</button>
+            </div>
+            <div class="zoom" role="group" aria-label="Zoom">
+              <button type="button" id="z-in" aria-label="Acercar">+</button>
+              <button type="button" id="z-out" aria-label="Alejar">−</button>
+              <button type="button" id="z-fit">Ver todo</button>
+            </div>
+          </div>
+
+          <div class="plano-lienzo">
+            <canvas id="plano" tabindex="0" role="img" aria-label="Plano interactivo de ingresos y costos"></canvas>
+          </div>
+          <ul class="leyenda">
+            <li><i class="l-ing"></i>Lo que cobras</li>
+            <li><i class="l-cos"></i>Lo que gastas</li>
+            <li><i class="l-fij"></i>Solo gastos fijos</li>
+          </ul>
+          <p class="plano-ayuda">Toca o pasa el mouse sobre el plano para leer los valores. Arrastra para moverte y haz zoom con la rueda del mouse, con dos dedos o con los botones. Con el teclado: flechas para mover el punto y + o − para el zoom.</p>
+
+          <div class="lectura" id="lectura" aria-live="polite"></div>
+
+          <h3 class="tv-titulo">Tabla de valores</h3>
+          <p class="hint">Toca una fila para ubicarla en el plano.</p>
+          <div class="tabla-scroll">
+            <table class="tv" id="tv">
+              <thead><tr><th scope="col" id="tv-q">Vendes</th><th scope="col">Cobras</th><th scope="col">Gastas</th><th scope="col">Ganas o pierdes</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </section>
+
+        <div class="ledger">
+          <div class="ledger-row"><span>Lo que cobras al mes</span><strong id="r3-it">—</strong></div>
+          <div class="ledger-row"><span>Lo que gastas al mes</span><strong id="r3-ct">—</strong></div>
+          <div class="ledger-row total-row"><span id="r3-b-l">Tu ganancia del mes</span><strong id="r3-b">—</strong></div>
+        </div>
+
+        <h2>¿Y si cambias tu precio?</h2>
+        <p class="hint">Si subes tu precio, quizá algunos clientes dejen de comprar. Prueba cuánto ganarías.</p>
+        <div class="sim">
+          <label class="field">
+            <span>Nuevo precio: <output id="sim-p-out">—</output></span>
+            <input type="range" id="sim-p" min="0" max="100" step="0.5" value="0">
+          </label>
+          <label class="field">
+            <span>Cambio en tus ventas: <output id="sim-d-out">0 %</output></span>
+            <input type="range" id="sim-d" min="-50" max="50" step="1" value="0">
+          </label>
+          <div class="sim-result" id="sim-result" data-tono="neutro">
+            <p id="sim-texto">Mueve las barras para comparar.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- PASO 4 -->
+      <section class="page" data-step="4" aria-labelledby="h4" hidden>
+        <h1 id="h4">¿Qué quieres comprar para tu negocio?</h1>
+        <p class="lead">Con tu ganancia puedes juntar dinero para algo que haga crecer tu negocio: una cocina, una vitrina, una moto para delivery. Aquí calculas cuánto separar cada mes para comprarlo a tiempo.</p>
+
+        <h2>1. Tu meta</h2>
+        <div class="row-3">
+          <label class="field">
+            <span>Quiero comprar</span>
+            <input type="text" id="metaNombre" placeholder="Ej.: una cocina industrial" autocomplete="off">
+          </label>
+          <label class="field">
+            <span>Cuesta</span>
+            <div class="money"><span>S/</span><input type="number" id="metaMonto" min="0" step="any" inputmode="decimal" placeholder="0"></div>
+          </label>
+          <label class="field">
+            <span>¿En cuántos meses?</span>
+            <input type="number" id="metaMeses" min="1" max="120" step="1" inputmode="numeric" placeholder="12">
+          </label>
+        </div>
+        <p class="hint">Mientras más meses te des, menos tienes que separar cada mes.</p>
+
+        <h2>2. ¿Dónde vas a guardar tu ahorro?</h2>
+        <p class="hint">El lugar importa: un banco o una caja te pagan por guardar tu dinero, y ese pago se llama <strong>interés</strong>. Elige una opción; si ya sabes la tasa de tu cuenta, escríbela en «Otra».</p>
+        <div class="lugares" role="radiogroup" aria-label="Dónde guardas tu ahorro">
+          <label class="lugar"><input type="radio" name="lugar" value="casa">
+            <span class="l-nom">En casa o en una alcancía</span>
+            <span class="l-tasa">0 % al año</span>
+            <span class="l-nota">Tu dinero no crece.</span>
+          </label>
+          <label class="lugar"><input type="radio" name="lugar" value="banco">
+            <span class="l-nom">Cuenta de ahorros en un banco grande</span>
+            <span class="l-tasa">1 % al año</span>
+            <span class="l-nota">Suelen pagar entre 0.5 % y 2 %.</span>
+          </label>
+          <label class="lugar"><input type="radio" name="lugar" value="caja">
+            <span class="l-nom">Cuenta de ahorros en una caja municipal</span>
+            <span class="l-tasa">4 % al año</span>
+            <span class="l-nota">Suelen pagar entre 2 % y 5 %.</span>
+          </label>
+          <label class="lugar"><input type="radio" name="lugar" value="otra">
+            <span class="l-nom">Otra tasa</span>
+            <span class="l-tasa l-otra"><input type="number" id="metaTasa" min="0" max="30" step="any" inputmode="decimal" placeholder="0" aria-label="Tasa anual en porcentaje"> % al año</span>
+            <span class="l-nota">La que te informe tu banco o caja.</span>
+          </label>
+        </div>
+
+        <details class="explica" open>
+          <summary>¿Qué es la tasa de interés de mi ahorro?</summary>
+          <p>Es lo que el banco o la caja te paga <strong>cada año</strong> por guardar tu dinero. Por ejemplo, si dejas S/ 100 durante un año al 4 %, terminas con S/ 104: esos S/ 4 son tus intereses.</p>
+          <p>En la página web o en la oficina de la entidad aparece como <strong>TREA</strong> (tasa de rendimiento efectivo anual). Ese es el número que debes poner aquí.</p>
+          <p>La app reparte esa tasa en meses. Cada mes tus intereses se suman a tu ahorro, y el mes siguiente también ganan intereses. Eso es el <strong>interés compuesto</strong>.</p>
+          <p>Guarda tu dinero solo en entidades supervisadas por la SBS: ahí tus ahorros están protegidos por el Fondo de Seguro de Depósitos (hasta S/ 117,200 por persona en cada entidad entre marzo y mayo de 2026; el monto se actualiza cada trimestre).</p>
+          <p class="fuente">Tasas de referencia de 2026. Revisa siempre la tasa vigente de tu entidad, porque cambia cada mes.</p>
+        </details>
+
+        <h2>3. Tu plan de ahorro</h2>
+        <div class="total" id="meta-box">
+          <p class="total-label">Separa cada mes</p>
+          <p class="total-num"><span id="meta-a">—</span></p>
+          <p class="total-sub" id="meta-sub">Completa tu meta.</p>
+        </div>
+
+        <div class="barra-meta" id="barra-meta" hidden>
+          <div class="bm-track"><div class="bm-tu" id="bm-tu"></div><div class="bm-int" id="bm-int"></div></div>
+          <div class="bm-leyenda"><span><i class="bm-c-tu"></i>Lo que pones tú: <strong id="r4-aporte">—</strong></span><span><i class="bm-c-int"></i>Lo que ponen los intereses: <strong id="r4-int">—</strong></span></div>
+        </div>
+
+        <div class="ledger">
+          <div class="ledger-row"><span>Parte de tu ganancia mensual</span><strong id="r4-pct">—</strong></div>
+        </div>
+        <p class="hint" id="meta-consejo"></p>
+
+        <h3 class="tv-titulo">¿Cuánto cambia según dónde ahorres?</h3>
+        <div class="tabla-scroll">
+          <table class="tv" id="comp">
+            <thead><tr><th scope="col">Dónde guardas</th><th scope="col">Separas al mes</th><th scope="col">Intereses ganados</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <p class="hint" id="comp-nota"></p>
+
+        <details class="explica">
+          <summary>Ver mi ahorro mes por mes</summary>
+          <div class="tabla-scroll">
+            <table class="tv" id="crono">
+              <thead><tr><th scope="col">Mes</th><th scope="col">Depositas</th><th scope="col">Intereses del mes</th><th scope="col">Ahorro acumulado</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </details>
+      </section>
+    </div>
+
+    <aside class="resumen" aria-label="Resumen de tu negocio">
+      <h2 id="res-nombre">Tu negocio</h2>
+      <dl>
+        <div><dt>Gastos fijos al mes</dt><dd id="s-cf">—</dd></div>
+        <div><dt>Costo por unidad</dt><dd id="s-cvu">—</dd></div>
+        <div><dt>Precio</dt><dd id="s-p">—</dd></div>
+        <div><dt>Para no perder</dt><dd id="s-eq">—</dd></div>
+        <div class="s-total"><dt>Ganancia del mes</dt><dd id="s-b">—</dd></div>
+      </dl>
+      <p class="hint">Tus datos se guardan solo en este navegador. Nadie más los ve.</p>
+    </aside>
+  </main>
+
+  <footer class="bottom">
+    <div class="bottom-inner">
+      <button type="button" class="nav-btn back" id="btn-back">Atrás</button>
+      <button type="button" class="nav-btn next" id="btn-next">Siguiente: Mi precio</button>
+    </div>
+  </footer>
+
+  <template id="tpl-gasto">
+    <div class="gasto">
+      <label class="field g-nombre">
+        <span>Gasto</span>
+        <input type="text" class="g-n" placeholder="Ej.: alquiler" autocomplete="off">
+      </label>
+      <label class="field g-monto">
+        <span class="g-monto-l">Monto al mes</span>
+        <div class="money"><span>S/</span><input type="number" class="g-m" min="0" step="any" inputmode="decimal" placeholder="0"></div>
+      </label>
+      <fieldset class="g-tipo">
+        <legend>¿Cuándo lo pagas?</legend>
+        <label><input type="radio" value="fijo" checked> Aunque no venda</label>
+        <label><input type="radio" value="variable"> <span class="g-por">Por cada unidad</span></label>
+      </fieldset>
+      <button type="button" class="g-del" aria-label="Quitar este gasto">Quitar</button>
+    </div>
+  </template>
+
+  <script src="app.js"></script>
+</body>
+</html>
