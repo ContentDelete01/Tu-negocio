@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="es-PE">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Calcula tu Negocio para entidades financieras</title>
+  <meta name="description" content="Herramienta de educación financiera con marca propia para bancos, cajas y financieras que atienden a micro y pequeñas empresas.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body { padding-bottom: 0; }
+    .ent { max-width: 1000px; margin: 0 auto; padding: 32px 16px 56px; }
+    .ent section { background: var(--blanco); border: 1px solid var(--linea); border-radius: var(--radio); padding: 28px 24px; margin-bottom: 24px; }
+    @media (min-width: 700px) { .ent section { padding: 36px 40px; } }
+    .heroe h1 { font-size: clamp(1.9rem, 5vw, 2.8rem); max-width: 22ch; }
+    .heroe .lead { font-size: 1.12rem; }
+    .acciones { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 20px; }
+    .btn { display: inline-flex; align-items: center; min-height: 52px; padding: 0 20px; border-radius: 10px; font-weight: 700; text-decoration: none; }
+    .btn.prim { background: var(--tinta); color: #fff; }
+    .btn.sec { border: 1.5px solid var(--tinta); color: var(--tinta); }
+    .cifras { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); margin-top: 8px; }
+    .cifra strong { display: block; font-size: 2.2rem; color: var(--tinta); line-height: 1.1; border-bottom: 4px double var(--tinta); width: fit-content; padding-bottom: 2px; margin-bottom: 6px; }
+    .cifra span { color: var(--gris); }
+    .valor { display: grid; gap: 16px; grid-template-columns: 1fr; margin-top: 12px; }
+    @media (min-width: 700px) { .valor { grid-template-columns: 1fr 1fr; } }
+    .valor div { border: 1.5px solid var(--linea); border-radius: var(--radio); padding: 18px; }
+    .valor h3 { margin: 0 0 6px; color: var(--tinta); font-size: 1.08rem; }
+    .valor p { margin: 0; color: var(--texto); }
+    .flujo { padding-left: 1.3em; margin: 12px 0 0; }
+    .flujo li { margin-bottom: 10px; }
+    .tv { margin-top: 4px; }
+    .tv td, .tv th { white-space: normal; text-align: left; }
+    .tabla-scroll .tv { min-width: 560px; }
+    .fuente { font-size: 0.85rem; color: var(--gris); margin-top: 10px; }
+
+    /* Boceto de la ubicación de los anuncios */
+    .boceto { display: grid; gap: 20px; grid-template-columns: 1fr; margin-top: 16px; }
+    @media (min-width: 760px) { .boceto { grid-template-columns: 1.4fr 1fr; align-items: start; } }
+    .wire { border: 2px solid var(--texto); border-radius: 12px; padding: 12px; background: var(--papel); display: grid; gap: 8px; font-size: 0.85rem; }
+    .wire .w-bar { height: 22px; border-radius: 6px; background: #D6DEEA; display: flex; align-items: center; padding: 0 8px; color: var(--gris); }
+    .wire .w-cols { display: grid; grid-template-columns: 2fr 1fr; gap: 8px; }
+    .wire .w-main, .wire .w-side { display: grid; gap: 8px; align-content: start; }
+    .wire .w-block { background: #fff; border: 1px solid var(--linea); border-radius: 6px; padding: 8px; color: var(--gris); }
+    .wire .w-block.alto { min-height: 70px; }
+    .wire .w-ad { border: 2px dashed var(--ambar-luz); background: var(--ambar-suave); border-radius: 6px; padding: 8px; font-weight: 700; color: var(--ambar); display: flex; gap: 8px; align-items: center; }
+    .wire .w-ad b { display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: var(--ambar); color: #fff; font-size: 0.8rem; flex: none; }
+    .wire .w-ad.alto { min-height: 90px; align-items: flex-start; }
+    .ad-lista { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
+    .ad-lista li { display: grid; grid-template-columns: auto 1fr; gap: 10px; }
+    .ad-lista b { display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: var(--ambar); color: #fff; }
+    .ad-lista p { margin: 0; }
+    .ad-lista span { color: var(--gris); font-size: 0.92rem; }
+    .pie-ent { text-align: center; color: var(--gris); font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+  <header class="top">
+    <div class="top-inner">
+      <a class="brand" href="index.html" style="text-decoration:none">
+        <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true">
+          <rect x="3" y="3" width="26" height="26" rx="5" fill="none" stroke="currentColor" stroke-width="2.4"/>
+          <path d="M9 21h14M9 25h14" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+          <path d="M10 15l4-4 3 3 5-6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span>Calcula tu Negocio</span>
+      </a>
+      <div class="top-actions">
+        <a class="link-btn" href="index.html">Ir a la app</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="ent">
+    <section class="heroe">
+      <h1>Una calculadora de negocio con tu marca para tus clientes emprendedores</h1>
+      <p class="lead">Calcula tu Negocio ayuda a los dueños de micronegocios a conocer sus costos, su punto de equilibrio y su capacidad de pago. Tu entidad la ofrece con su marca, educa a sus clientes y recibe solicitudes de personas que ya conocen sus números.</p>
+      <div class="acciones">
+        <a class="btn prim" href="index.html?entidad=demo">Ver la demostración con marca</a>
+        <a class="btn sec" href="index.html">Ver la versión pública</a>
+      </div>
+    </section>
+
+    <section>
+      <h2>Un mercado grande y poco atendido</h2>
+      <div class="cifras">
+        <div class="cifra"><strong>99.5 %</strong><span>de las empresas del Perú son mypes.</span></div>
+        <div class="cifra"><strong>75.3 %</strong><span>de las mypes no lleva ningún registro de sus cuentas.</span></div>
+        <div class="cifra"><strong>7 %</strong><span>de las mypes tiene un producto de crédito.</span></div>
+      </div>
+      <p class="fuente">Fuente: ComexPerú, Reporte Mypes 2023, con datos de la ENAHO 2023.</p>
+      <p>Sin registros, al emprendedor le cuesta saber cuánto puede pagar, y a la entidad le cuesta evaluarlo. Calcula tu Negocio cubre ese vacío antes de la primera conversación.</p>
+    </section>
+
+    <section>
+      <h2>Qué gana tu entidad</h2>
+      <div class="valor">
+        <div><h3>Clientes que llegan preparados</h3><p>El emprendedor llega sabiendo su ganancia, su punto de equilibrio y qué cuota puede pagar. Además, puede guardar su resumen en PDF y llevarlo a la agencia.</p></div>
+        <div><h3>Solicitudes con consentimiento</h3><p>El botón «Quiero que me contacten» pide autorización expresa, conforme a la Ley N.° 29733 de Protección de Datos Personales.</p></div>
+        <div><h3>Crédito responsable</h3><p>El simulador de crédito compara la cuota con la ganancia del negocio y alerta cuando es muy alta. Así se evita el sobreendeudamiento desde el inicio.</p></div>
+        <div><h3>Educación financiera con tu marca</h3><p>Explica costos, precio, interés compuesto y TCEA en lenguaje simple. Sirve para programas de educación financiera y campañas para emprendedores.</p></div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Cómo funciona</h2>
+      <ol class="flujo">
+        <li><strong>Tu entidad la publica con su marca:</strong> su nombre, sus colores y sus tasas de referencia, en su web o como enlace en campañas, redes y agencias.</li>
+        <li><strong>El emprendedor hace sus cálculos:</strong> costos, precio, punto de equilibrio y una meta de compra. Todo queda en su celular; no hace falta crear una cuenta.</li>
+        <li><strong>Compara ahorrar con financiar:</strong> ve la cuota, los intereses y si su negocio puede pagarla.</li>
+        <li><strong>Pide asesoría si lo desea:</strong> autoriza el contacto y tu asesor recibe su solicitud con el resumen ya calculado. Esto requiere conectar la app a un sistema de la entidad en la versión comercial.</li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>Modelos de venta</h2>
+      <div class="tabla-scroll">
+        <table class="tv">
+          <thead><tr><th scope="col">Modelo</th><th scope="col">Qué incluye</th><th scope="col">Para quién</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">Marca blanca</th><td>La app con la marca, los colores y las tasas de la entidad, sin anuncios de terceros, y con el botón de contacto conectado a su equipo comercial.</td><td>Bancos, cajas municipales y financieras</td></tr>
+            <tr><th scope="row">Patrocinio</th><td>La versión pública muestra «Ofrecido por» la entidad y sus productos de ahorro y crédito en los espacios financieros.</td><td>Entidades que buscan visibilidad con emprendedores</td></tr>
+            <tr><th scope="row">Publicidad</th><td>Espacios para proveedores y servicios útiles para el negocio, dentro de la versión pública y gratuita.</td><td>Mayoristas, distribuidores, servicios de delivery y de pago</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="fuente">Las tarifas de cada modelo están por definir.</p>
+    </section>
+
+    <section id="anuncios">
+      <h2>Espacios publicitarios de la versión pública</h2>
+      <p>La versión gratuita se sostiene con anuncios que aparecen junto al paso en el que son útiles. Cada anuncio se identifica como «Publicidad» y no interrumpe los cálculos.</p>
+      <div class="boceto">
+        <div class="wire" aria-label="Boceto de la página con los espacios publicitarios">
+          <div class="w-bar">Cabecera · pasos 1 a 4</div>
+          <div class="w-cols">
+            <div class="w-main">
+              <div class="w-block alto">Paso 2 · Mi precio y semáforo</div>
+              <div class="w-ad"><b>1</b>Anuncio de insumos</div>
+              <div class="w-block alto">Paso 3 · Equilibrio y simulador</div>
+              <div class="w-ad"><b>2</b>Banner ancho</div>
+              <div class="w-block alto">Paso 4 · Meta y crédito</div>
+              <div class="w-ad"><b>3</b>Producto financiero</div>
+            </div>
+            <div class="w-side">
+              <div class="w-block alto">Resumen del negocio</div>
+              <div class="w-ad alto"><b>4</b>Anuncio lateral</div>
+            </div>
+          </div>
+        </div>
+        <ul class="ad-lista">
+          <li><b>1</b><p><strong>Insumos (paso 2).</strong><br><span>Aparece cuando el usuario ve su costo por unidad. Ideal para mayoristas y distribuidores.</span></p></li>
+          <li><b>2</b><p><strong>Banner ancho (paso 3).</strong><br><span>Debajo del simulador de precio. Para marcas que quieren alcance general.</span></p></li>
+          <li><b>3</b><p><strong>Producto financiero (paso 4).</strong><br><span>Junto a la meta de ahorro y al crédito. Reservado para entidades supervisadas.</span></p></li>
+          <li><b>4</b><p><strong>Lateral (en computadora).</strong><br><span>Visible durante todo el recorrido. Para servicios como delivery o pagos digitales.</span></p></li>
+        </ul>
+      </div>
+    </section>
+
+    <section>
+      <h2>Privacidad y cumplimiento</h2>
+      <ul>
+        <li>Los cálculos se hacen en el celular del usuario; la app no guarda sus datos en servidores.</li>
+        <li>Los datos personales solo se piden si el usuario quiere que lo contacten, y con su autorización expresa.</li>
+        <li>Las tasas se muestran como referencia y la app recuerda consultar la TCEA o TREA vigente de cada entidad.</li>
+        <li>Los resultados son educativos: no reemplazan la evaluación crediticia de la entidad ni son una oferta de crédito.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Próximos pasos del producto</h2>
+      <ul>
+        <li>Panel para que la entidad reciba y gestione las solicitudes de contacto.</li>
+        <li>Indicadores anónimos y agregados de uso, por ejemplo cuántos emprendedores calcularon su punto de equilibrio.</li>
+        <li>Varios productos por negocio, con distinto margen, pensado para bodegas.</li>
+        <li>Validación con emprendedores reales antes del lanzamiento comercial.</li>
+      </ul>
+    </section>
+
+    <p class="pie-ent">Calcula tu Negocio · Proyecto ExpoInnova 2026, curso Fundamentos de Microeconomía. Las marcas de los anuncios de ejemplo y la «Caja Demo» son ficticias.</p>
+  </main>
+</body>
+</html>

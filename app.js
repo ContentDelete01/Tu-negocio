@@ -23,7 +23,7 @@
     negocio: "", unidad: "",
     gastos: [{ nombre: "", monto: "", tipo: "fijo" }],
     sueldo: "", precio: "", ventasDia: "", dias: "",
-    metaNombre: "", metaMonto: "", metaMeses: "", metaTasa: "", metaLugar: "casa",
+    metaNombre: "", metaMonto: "", metaMeses: "", metaTasa: "", metaLugar: "casa", credTasa: "", credMeses: "",
     sim: { precio: null, cambio: 0 },
     paso: 1,
   });
@@ -36,7 +36,7 @@
       { nombre: "Insumos por menú", monto: 6, tipo: "variable" },
     ],
     sueldo: "", precio: 10, ventasDia: 40, dias: 25,
-    metaNombre: "una cocina industrial", metaMonto: 3000, metaMeses: 12, metaTasa: 4, metaLugar: "caja",
+    metaNombre: "una cocina industrial", metaMonto: 3000, metaMeses: 12, metaTasa: 4, metaLugar: "caja", credTasa: 50, credMeses: 12,
     sim: { precio: 11, cambio: -10 },
     paso: 1,
   });
@@ -127,7 +127,7 @@
   });
 
   // ---------- Campos simples ----------
-  const campos = ["negocio", "unidad", "sueldo", "precio", "ventasDia", "dias", "metaNombre", "metaMonto", "metaMeses", "metaTasa"];
+  const campos = ["negocio", "unidad", "sueldo", "precio", "ventasDia", "dias", "metaNombre", "metaMonto", "metaMeses", "metaTasa", "credTasa", "credMeses"];
   function pintarCampos() { campos.forEach((c) => { $(c).value = estado[c] ?? ""; }); }
   campos.forEach((c) => $(c).addEventListener("input", () => {
     estado[c] = $(c).value;
@@ -193,6 +193,7 @@
   }
 
   function dibujarPlano() {
+    if ($("plano-panel").hidden) return;
     const r = calcular();
     const d = datosPlano(r);
     plano.d = d;
@@ -503,6 +504,7 @@
 
     simulador(r);
     meta(r);
+    credito(r);
 
     // Resumen
     $("res-nombre").textContent = (estado.negocio || "").trim() || "Tu negocio";
@@ -638,6 +640,146 @@
     $("crono").querySelector("tbody").innerHTML = html;
   }
 
+  // ---------- Crédito y capacidad de pago (paso 4) ----------
+  // Cuota fija (método francés): R = M · i / (1 − (1 + i)^−n), con i = (1 + TCEA)^(1/12) − 1
+  function cuotaCredito(M, n, tceaPct) {
+    const i = tem(tceaPct);
+    return i > 0 ? (M * i) / (1 - Math.pow(1 + i, -n)) : M / n;
+  }
+  function credito(r) {
+    const box = $("credito");
+    const M = num(estado.metaMonto);
+    const n = Math.round(num(estado.credMeses)) || Math.round(num(estado.metaMeses));
+    const tasa = estado.credTasa === "" || estado.credTasa == null ? null : num(estado.credTasa);
+    const sinDatos = (msg) => {
+      box.dataset.estado = "vacio";
+      ["c-cuota", "c-total", "c-int"].forEach((k) => { $(k).textContent = "—"; });
+      $("c-cap-t").textContent = "Capacidad de pago";
+      $("c-cap-x").textContent = msg;
+      $("c-comp").textContent = "";
+      return null;
+    };
+    if (!(M > 0 && n > 0)) return sinDatos("Completa tu meta (qué quieres comprar y cuánto cuesta).");
+    if (tasa == null) return sinDatos("Escribe la tasa del crédito (TCEA) que te ofrece la entidad.");
+    const R = cuotaCredito(M, n, tasa);
+    const total = R * n, interes = total - M;
+    $("c-cuota").textContent = S(R);
+    $("c-total").textContent = S(total);
+    $("c-int").textContent = S(interes);
+
+    let est, t, x;
+    const pct = r.tieneVentas && r.B > 0 ? (R / r.B) * 100 : null;
+    if (!r.tieneVentas) { est = "vacio"; t = "Capacidad de pago"; x = "Completa el paso 2 para saber si tu negocio puede pagar esta cuota."; }
+    else if (r.B <= 0) { est = "rojo"; t = "Hoy no podrías pagar la cuota"; x = "Tu negocio no tiene ganancia este mes. Primero ajusta tu precio o tus costos."; }
+    else if (pct <= 30) { est = "verde"; t = "Cuota cómoda"; x = `La cuota es el ${dec1.format(pct)} % de tu ganancia del mes (${S(r.B)}). Te queda margen para imprevistos.`; }
+    else if (pct <= 50) { est = "amarillo"; t = "Cuota ajustada"; x = `La cuota es el ${dec1.format(pct)} % de tu ganancia del mes. Si un mes vendes menos, te costará pagarla; prueba un plazo más largo.`; }
+    else { est = "rojo"; t = "Cuota muy alta para tu negocio"; x = `La cuota es el ${dec1.format(pct)} % de tu ganancia del mes. Es riesgoso: alarga el plazo, elige algo más barato o ahorra primero.`; }
+    box.dataset.estado = est;
+    $("c-cap-t").textContent = t;
+    $("c-cap-x").textContent = x;
+
+    const nA = Math.round(num(estado.metaMeses));
+    if (nA > 0) {
+      const tasaAh = tasaElegida();
+      const A = cuotaAhorro(M, nA, tasaAh);
+      const intAh = M - A * nA;
+      $("c-comp").textContent = `Comparación: ahorrando separas ${S(A)} al mes y lo compras en ${nA} ${nA === 1 ? "mes" : "meses"}; los intereses te ayudan con ${S(intAh)}. ` +
+        `Con el crédito lo tienes hoy, pero pagas ${S(interes)} de intereses. El crédito conviene si lo que compras te ayuda a ganar más de lo que cuesta.`;
+    } else {
+      $("c-comp").textContent = "";
+    }
+    return { R, total, interes, n, tasa, pct, est, t };
+  }
+
+  // ---------- Marca blanca (versión para entidades) ----------
+  // Para una entidad real, se completa CONFIG.entidad con su nombre y colores.
+  // Para ver una demostración, abre index.html?entidad=demo
+  const CONFIG = { entidad: null, anuncios: true };
+  const ENTIDADES_DEMO = { demo: { nombre: "Caja Demo", color: "#0B6E4F", colorSuave: "#E2F1E9" } };
+  try {
+    const q = new URLSearchParams(location.search).get("entidad");
+    if (q && ENTIDADES_DEMO[q]) { CONFIG.entidad = ENTIDADES_DEMO[q]; CONFIG.anuncios = false; }
+  } catch (e) { /* sin parámetros */ }
+
+  function aplicarMarca() {
+    const ent = CONFIG.entidad;
+    document.body.classList.toggle("sin-anuncios", !CONFIG.anuncios);
+    if (!ent) return;
+    const raiz = document.documentElement.style;
+    raiz.setProperty("--tinta", ent.color);
+    raiz.setProperty("--tinta-suave", ent.colorSuave);
+    COL.tinta = ent.color;
+    const of = $("ofrecido"); of.hidden = false; of.textContent = `Ofrecido por ${ent.nombre}`;
+    $("lnk-entidades").hidden = true;
+    $("cta-tit").textContent = `¿Quieres que ${ent.nombre} te ayude a financiar tu negocio?`;
+    $("cta-txt").textContent = `Un asesor de ${ent.nombre} puede revisar contigo estos números y mostrarte opciones de crédito o ahorro.`;
+    $("btn-contacto").textContent = `Quiero que ${ent.nombre} me contacte`;
+    $("dlg-intro").textContent = `Déjanos tus datos y un asesor de ${ent.nombre} te contactará con tu resumen ya calculado.`;
+    $("c-ok-txt").textContent = `Autorizo a ${ent.nombre} a usar mis datos y mi resumen para contactarme con información sobre sus productos, según la Ley N.° 29733 de Protección de Datos Personales.`;
+    $("dlg-ok-txt").textContent = `En la versión real, tu solicitud y tu resumen llegarían a ${ent.nombre}. En esta demostración no se envió nada.`;
+    document.title = `Calcula tu Negocio · ${ent.nombre}`;
+  }
+
+  // ---------- Solicitud de contacto (con consentimiento) ----------
+  const dlg = $("dlg-contacto");
+  $("btn-contacto").addEventListener("click", () => {
+    $("form-contacto").hidden = false; $("dlg-ok").hidden = true;
+    $("form-contacto").reset();
+    if (typeof dlg.showModal === "function") dlg.showModal(); else dlg.setAttribute("open", "");
+  });
+  $("dlg-cancelar").addEventListener("click", () => dlg.close());
+  $("dlg-cerrar").addEventListener("click", () => dlg.close());
+  $("form-contacto").addEventListener("submit", (e) => {
+    e.preventDefault();
+    if (!$("form-contacto").reportValidity()) return;
+    // Demostración: no se envía ni se guarda ningún dato personal.
+    $("form-contacto").reset();
+    $("form-contacto").hidden = true; $("dlg-ok").hidden = false;
+  });
+
+  // ---------- Resumen imprimible / PDF ----------
+  function construirReporte() {
+    const r = calcular();
+    const u = unidad(), us = unidades();
+    const ent = CONFIG.entidad;
+    const fecha = new Intl.DateTimeFormat("es-PE", { dateStyle: "long" }).format(new Date());
+    const fila = (a, b) => `<tr><th scope="row">${a}</th><td>${b}</td></tr>`;
+    const nombre = (estado.negocio || "").trim() || "Mi negocio";
+    const gastos = estado.gastos.filter((g) => num(g.monto) > 0)
+      .map((g) => fila(g.nombre || "Gasto", `${S(num(g.monto))} ${g.tipo === "fijo" ? "al mes (fijo)" : `por ${u} (variable)`}`)).join("");
+    const sem = semaforo(r);
+    const VF = num(estado.metaMonto), nA = Math.round(num(estado.metaMeses));
+    const meta = VF > 0 && nA > 0 ? fila("Meta de ahorro", `${(estado.metaNombre || "Meta").trim()}: ${S(VF)} en ${nA} meses`) +
+      fila("Ahorro mensual necesario", `${S(cuotaAhorro(VF, nA, tasaElegida()))} (tasa ${tasaElegida()} % al año)`) : "";
+    const c = credito(r);
+    const cred = c ? fila("Crédito simulado", `${S(VF)} a ${c.n} meses, TCEA ${c.tasa} %`) + fila("Cuota mensual", S(c.R)) +
+      fila("Intereses del crédito", S(c.interes)) + fila("Capacidad de pago", c.pct != null ? `${c.t} (${dec1.format(c.pct)} % de la ganancia)` : c.t) : "";
+    $("reporte").innerHTML = `
+      <header><p class="rp-marca">Calcula tu Negocio${ent ? ` · ${ent.nombre}` : ""}</p><h1>Resumen de ${nombre}</h1><p>${fecha}</p></header>
+      <h2>Costos</h2><table>${gastos || fila("Gastos", "Sin datos")}${fila("Sueldo propio (costo de oportunidad)", S(r.sueldo))}${fila("Gastos fijos al mes", S(r.CF))}${fila(`Costo variable por ${u}`, S(r.CVu))}</table>
+      <h2>Precio y resultados</h2><table>${fila(`Precio por ${u}`, r.tienePrecio ? S(r.P) : "—")}${fila("Ventas al mes", r.tieneVentas ? `${entero.format(r.Q)} ${us}` : "—")}
+        ${fila(`Margen por ${u}`, r.tienePrecio ? S(r.margen) : "—")}${fila("Costo medio", r.CMe != null ? S(r.CMe) : "—")}
+        ${fila("Punto de equilibrio", r.Qeq != null ? `${entero.format(Math.ceil(r.Qeq))} ${us} al mes${r.dias ? ` (${entero.format(Math.ceil(r.Qeq / r.dias))} al día)` : ""}` : "No existe con este precio")}
+        ${fila("Ingreso del mes", r.tieneVentas ? S(r.IT) : "—")}${fila("Costo total del mes", r.tieneVentas ? S(r.CT) : "—")}${fila(r.B < 0 ? "Pérdida del mes" : "Ganancia del mes", r.tieneVentas ? S(r.B) : "—")}
+        ${fila("Semáforo del precio", sem.t)}</table>
+      ${meta || cred ? `<h2>Meta y financiamiento</h2><table>${meta}${cred}</table>` : ""}
+      <p class="rp-aviso">Resumen elaborado por el propio emprendedor con datos declarados. Es referencial: no constituye una evaluación crediticia ni una oferta de crédito.</p>`;
+  }
+  const imprimir = () => { construirReporte(); window.print(); };
+  $("btn-imprimir").addEventListener("click", imprimir);
+  $("btn-imprimir2").addEventListener("click", imprimir);
+  window.addEventListener("beforeprint", construirReporte);
+
+  // ---------- Gráfico plegable (paso 3) ----------
+  $("btn-plano").addEventListener("click", () => {
+    const panel = $("plano-panel"), b = $("btn-plano");
+    const abrir = panel.hidden;
+    panel.hidden = !abrir;
+    b.setAttribute("aria-expanded", String(abrir));
+    $("btn-plano-sub").textContent = abrir ? "Toca para ocultar el gráfico" : "Toca para ver el gráfico interactivo y la tabla de valores";
+    if (abrir) { plano.key = ""; dibujarPlano(); }
+  });
+
   // ---------- Navegación ----------
   const nombresPaso = { 1: "Mis costos", 2: "Mi precio", 3: "Equilibrio", 4: "Mi meta" };
   function irA(p, foco) {
@@ -679,6 +821,7 @@
   window.addEventListener("resize", () => { clearTimeout(tResize); tResize = setTimeout(() => { if (estado.paso === 3) dibujarPlano(); }, 120); });
 
   function iniciar() { pintarCampos(); pintarGastos(); actualizar(); }
+  aplicarMarca();
 
   // Exponer cálculos para pruebas
   window.__calcula = { calcular, estado: () => estado };

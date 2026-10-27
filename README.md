@@ -27,7 +27,17 @@ Luego entra a `http://localhost:8000` (o a la dirección que muestre `npx serve`
 
 Los datos se guardan solo en tu navegador. No se envían a ningún servidor.
 
-## Novedades de esta versión
+## Novedades de la versión 3
+
+- **Gráfico plegable (paso 3):** el gráfico de ingresos y costos está cerrado por defecto y se abre con el botón «Gráfico de ingresos y costos».
+- **Espacios publicitarios de ejemplo:** cuatro anuncios de muestra (pasos 2, 3 y 4, y lateral), marcados como «Publicidad». Las marcas son ficticias.
+- **Simulador de crédito (paso 4):** cuota, total pagado, intereses y semáforo de capacidad de pago (cuota frente a la ganancia del mes), comparado con ahorrar.
+- **Solicitud de asesoría:** botón «Quiero que me contacten» con consentimiento según la Ley N.° 29733. En esta demostración no se envía ni se guarda ningún dato.
+- **Resumen en PDF:** botón «Guardar mi resumen en PDF» que imprime una hoja con todos los resultados.
+- **Versión para entidades (marca blanca):** abre `index.html?entidad=demo` para ver la app con la marca ficticia «Caja Demo», sin anuncios. Para una entidad real se completa `CONFIG.entidad` en `app.js`.
+- **Página para bancos y cajas:** `entidades.html` explica la propuesta de valor, los modelos de venta y el boceto de los espacios publicitarios.
+
+## Novedades de la versión 2
 
 - **Plano interactivo (paso 3):** funciona como GeoGebra. Toca o pasa el mouse para leer cuánto cobras, gastas y ganas en cualquier cantidad. Arrastra para moverte, haz zoom con la rueda del mouse, dos dedos o los botones, y cambia entre **Por día** y **Por mes**. Debajo hay una **tabla de valores**; al tocar una fila, el punto se ubica en el plano.
 - **Paso 4 más claro:** eliges dónde guardas tu ahorro (en casa 0 %, banco grande 1 %, caja municipal 4 % u otra tasa). Además, ves cuánto ponen los intereses, una comparación entre opciones y tu ahorro mes por mes.
@@ -39,6 +49,7 @@ Los datos se guardan solo en tu navegador. No se envían a ningún servidor.
 | `index.html` | La estructura de las 4 pantallas |
 | `styles.css` | El diseño (cuaderno cuadriculado y tinta azul) |
 | `app.js` | Las fórmulas y la lógica de la app |
+| `entidades.html` | Página de presentación para bancos, cajas y financieras |
 
 ## Fórmulas que usa (ver `app.js`)
 

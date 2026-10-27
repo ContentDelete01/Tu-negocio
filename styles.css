@@ -23,6 +23,7 @@
 }
 
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }
 
 html { -webkit-text-size-adjust: 100%; }
 
@@ -449,4 +450,123 @@ output { color: var(--tinta); font-weight: 700; }
 @media (prefers-reduced-motion: no-preference) {
   .page.enter { animation: entrar 0.22s ease-out; }
   @keyframes entrar { from { opacity: 0; transform: translateX(12px); } to { opacity: 1; transform: none; } }
+}
+
+/* ======================= v3 ======================= */
+
+/* ---------- Marca blanca ---------- */
+.ofrecido {
+  font-size: 0.8rem; font-weight: 700; color: var(--tinta);
+  background: var(--tinta-suave); border-radius: 999px; padding: 3px 10px; margin-left: 4px;
+}
+a.link-btn { display: inline-block; }
+
+/* ---------- Gráfico plegable ---------- */
+.plano-h { margin: 0; }
+.desplegar {
+  width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  text-align: left; background: var(--tinta-suave); color: var(--tinta);
+  border: 1.5px solid var(--tinta); border-radius: var(--radio); padding: 14px 18px; min-height: 64px;
+}
+.desplegar:hover { background: #DCE4F3; }
+.d-txt { display: flex; flex-direction: column; gap: 2px; }
+.d-tit { font-size: 1.1rem; font-weight: 700; }
+.d-sub { font-size: 0.9rem; font-weight: 400; color: var(--gris); }
+.d-flecha { width: 26px; height: 26px; flex: none; transition: transform 0.2s ease; }
+.desplegar[aria-expanded="true"] .d-flecha { transform: rotate(180deg); }
+.plano-panel { padding-top: 14px; }
+@media (prefers-reduced-motion: reduce) { .d-flecha { transition: none; } }
+
+/* ---------- Espacios publicitarios (boceto) ---------- */
+.anuncio {
+  margin-top: 28px; border: 1.5px dashed #B7C2D3; border-radius: var(--radio);
+  background: #FBFCFE; padding: 10px 14px 14px;
+}
+.sin-anuncios .anuncio { display: none; }
+.ad-etq { margin: 0 0 8px; font-size: 0.78rem; color: var(--gris); letter-spacing: 0.02em; }
+.ad-cuerpo { display: flex; align-items: center; gap: 14px; }
+.ad-logo {
+  width: 52px; height: 52px; border-radius: 12px; flex: none; display: grid; place-items: center;
+  background: #6B4F2A; color: #fff; font-weight: 700; font-size: 1.05rem;
+}
+.ad-logo.verde { background: #2F7D32; }
+.ad-logo.ambar { background: #B7791F; }
+.ad-tit { margin: 0; font-weight: 700; }
+.ad-ficticia { font-weight: 400; font-size: 0.82rem; color: var(--gris); }
+.ad-txt { margin: 2px 0 0; font-size: 0.93rem; color: var(--gris); }
+.ad-cta {
+  margin-left: auto; flex: none; padding: 8px 14px; border-radius: 8px; font-weight: 700; font-size: 0.92rem;
+  background: var(--texto); color: #fff; text-decoration: none; white-space: nowrap;
+}
+.anuncio.banner { background: repeating-linear-gradient(135deg, #F7F9FC 0 10px, #EFF3F9 10px 20px); }
+.anuncio.banner .ad-tit { font-size: 1.15rem; }
+.anuncio.lateral { margin-top: 18px; }
+.anuncio.lateral .ad-cuerpo { flex-wrap: wrap; }
+.anuncio.lateral .ad-cta { margin-left: 0; }
+@media (max-width: 520px) {
+  .ad-cuerpo { flex-wrap: wrap; }
+  .ad-cta { margin-left: 66px; }
+  .anuncio.banner .ad-cta { margin-left: 0; }
+}
+
+/* ---------- Crédito y capacidad de pago ---------- */
+.credito { margin-top: 18px; border: 1.5px solid var(--linea); border-radius: var(--radio); padding: 16px; background: var(--blanco); }
+.cred-cifras { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.cred-cifras span { display: block; font-size: 0.88rem; color: var(--gris); }
+.cred-cifras strong { font-size: 1.25rem; color: var(--tinta); }
+@media (max-width: 520px) { .cred-cifras { grid-template-columns: 1fr; } .cred-cifras > div { display: flex; justify-content: space-between; align-items: baseline; } }
+.cred-cap { display: flex; gap: 16px; align-items: center; margin-top: 16px; padding: 14px; border-radius: var(--radio); background: var(--papel); border: 1.5px solid var(--linea); }
+.credito .hint { margin: 14px 0 0; }
+.credito[data-estado="verde"] .cred-cap { background: var(--verde-suave); border-color: var(--verde); }
+.credito[data-estado="verde"] .v { opacity: 1; box-shadow: 0 0 10px #3FAE4A; }
+.credito[data-estado="verde"] .sem-titulo { color: var(--verde); }
+.credito[data-estado="amarillo"] .cred-cap { background: var(--ambar-suave); border-color: var(--ambar-luz); }
+.credito[data-estado="amarillo"] .a { opacity: 1; box-shadow: 0 0 10px var(--ambar-luz); }
+.credito[data-estado="amarillo"] .sem-titulo { color: var(--ambar); }
+.credito[data-estado="rojo"] .cred-cap { background: var(--rojo-suave); border-color: var(--rojo); }
+.credito[data-estado="rojo"] .r { opacity: 1; box-shadow: 0 0 10px #E5534B; }
+.credito[data-estado="rojo"] .sem-titulo { color: var(--rojo); }
+
+.cta-ent {
+  margin-top: 24px; padding: 18px; border-radius: var(--radio); background: var(--tinta-suave);
+  border: 1.5px solid var(--tinta); display: grid; gap: 14px;
+}
+.cta-tit { margin: 0 0 4px; font-weight: 700; font-size: 1.1rem; color: var(--tinta); }
+.cta-txt { margin: 0; }
+.cta-btns { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.cta-btns .nav-btn.next { flex: 0 1 auto; margin-left: 0; }
+.cta-btns .ghost-btn { margin-top: 0; min-height: 52px; }
+.ghost-btn.ancho { width: 100%; margin: 0 0 12px; }
+
+/* ---------- Diálogo de contacto ---------- */
+.dialogo { border: none; border-radius: 14px; padding: 24px; width: min(460px, calc(100% - 32px)); color: var(--texto); }
+.dialogo::backdrop { background: rgba(24, 32, 46, 0.55); }
+.dialogo h2 { color: var(--tinta); margin: 0 0 8px; }
+.dialogo form, .dlg-ok { display: grid; gap: 14px; }
+.consent { display: flex; gap: 10px; align-items: flex-start; font-size: 0.92rem; }
+.consent input { width: 20px; height: 20px; margin-top: 2px; accent-color: var(--tinta); flex: none; }
+.demo-nota { margin: 0; font-size: 0.85rem; color: var(--ambar); font-weight: 700; }
+.dlg-btns { display: flex; gap: 10px; justify-content: flex-end; }
+.dlg-btns .nav-btn.next { flex: 0 1 auto; }
+
+/* ---------- Aviso legal ---------- */
+.aviso-legal { max-width: 1080px; margin: 0 auto 24px; padding: 0 16px; font-size: 0.85rem; color: var(--gris); }
+.aviso-legal a { color: var(--tinta); }
+
+/* ---------- Resumen imprimible ---------- */
+.reporte { display: none; }
+@media print {
+  @page { size: A4; margin: 16mm; }
+  body { background: #fff; padding: 0; font-size: 11pt; }
+  body > *:not(#reporte) { display: none !important; }
+  .reporte { display: block; color: #000; }
+  .reporte header { border-bottom: 2px solid var(--tinta); margin-bottom: 12px; padding-bottom: 6px; }
+  .reporte .rp-marca { margin: 0; font-weight: 700; color: var(--tinta); }
+  .reporte h1 { font-size: 18pt; margin: 4px 0; color: #000; }
+  .reporte header p { margin: 0; color: #444; }
+  .reporte h2 { font-size: 13pt; margin: 16px 0 6px; color: var(--tinta); }
+  .reporte table { width: 100%; border-collapse: collapse; }
+  .reporte th, .reporte td { text-align: left; padding: 5px 8px; border-bottom: 1px solid #ccc; font-weight: 400; }
+  .reporte td { text-align: right; font-weight: 700; }
+  .rp-aviso { margin-top: 18px; font-size: 9pt; color: #444; }
 }
